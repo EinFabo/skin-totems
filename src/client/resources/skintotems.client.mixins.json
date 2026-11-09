@@ -1,0 +1,12 @@
+{
+	"required": true,
+	"package": "de.einfabo.skintotems.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"ScreenEffectRendererMixin",
+		"TextureManagerAccessor"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

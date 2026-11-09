@@ -1,0 +1,109 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+version = "${project.mod_version}+${project.minecraft_version}"
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+loom {
+	splitEnvironmentSourceSets()
+
+	mods {
+		"skintotems" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+}
+
+repositories {
+	// Mod Menu (nur zum Kompilieren der optionalen Anbindung)
+	maven { url = "https://maven.terraformersmc.com/releases" }
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	compileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+
+	testImplementation platform("org.junit:junit-bom:5.13.4")
+	testImplementation "org.junit.jupiter:junit-jupiter"
+	testImplementation "org.junit.jupiter:junit-jupiter-params"
+	testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+test {
+	useJUnitPlatform()
+}
+
+processResources {
+	def version = project.version
+	inputs.property "version", version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+	it.options.encoding = "UTF-8"
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "skintotems-test"
+		enableGameTests = false
+		enableClientGameTests = true
+		eula = true
+	}
+}
+
+// ./gradlew runClientGameTest -PforceSkinDownload testet den Fallback, der Skins selbst herunterlädt
+// -PplushieOnly: nur die Plushie-Aufnahmen
+loom.runs.matching { it.name == "clientGameTest" }.configureEach {
+	if (project.hasProperty("forceSkinDownload")) {
+		vmArg "-Dskintotems.debug.forceDownload=true"
+	}
+	if (project.hasProperty("showcase")) {
+		vmArg "-Dskintotems.test.showcase=true"
+	}
+	if (project.hasProperty("plushieOnly")) {
+		vmArg "-Dskintotems.test.plushieOnly=true"
+	}
+}
+
+// Spieltest unsichtbar und stumm: -PtestDisplay=:99 schickt das Fenster auf einen virtuellen
+// X-Bildschirm (tools/run-gametest.sh startet ihn), der Ton ist im Test-Spielordner aus.
+tasks.matching { it.name == "runClientGameTest" }.configureEach {
+	if (project.hasProperty("testDisplay")) {
+		environment "DISPLAY", project.property("testDisplay")
+		environment.remove("WAYLAND_DISPLAY")
+	}
+	doFirst {
+		def options = file("build/run/clientGameTest/options.txt")
+		if (options.exists()) {
+			options.text = options.text.replaceAll(/(?m)^soundCategory_master:.*$/, "soundCategory_master:0.0")
+		} else {
+			options.parentFile.mkdirs()
+			options.text = "soundCategory_master:0.0\n"
+		}
+	}
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.archives_base_name}" }
+	}
+}

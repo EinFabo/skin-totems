@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "id": "skintotems",
+  "version": "${version}",
+  "name": "Skin Totems",
+  "description": "Every Totem of Undying shows the skin of the player holding it, as a flat skin totem or a little 3D plushie. Client-side only, works on any server and with resource packs.",
+  "authors": [
+    "EinFabo"
+  ],
+  "contact": {
+    "homepage": "https://modrinth.com/mod/skin-totems",
+    "sources": "https://github.com/EinFabo/skin-totems",
+    "issues": "https://github.com/EinFabo/skin-totems/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/skintotems/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "de.einfabo.skintotems.SkinTotemsClient"
+    ],
+    "modmenu": [
+      "de.einfabo.skintotems.config.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    {
+      "config": "skintotems.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.20.1",
+    "minecraft": "~26.2",
+    "java": ">=25",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "modmenu": "*"
+  }
+}

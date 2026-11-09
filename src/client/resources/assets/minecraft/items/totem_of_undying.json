@@ -1,0 +1,11 @@
+{
+  "model": {
+    "type": "skintotems:player_totem",
+    "base": "minecraft:item/totem_of_undying",
+    "plushie_base": "skintotems:item/plushie",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "minecraft:item/totem_of_undying"
+    }
+  }
+}
