@@ -126,6 +126,8 @@ def main():
     else:
         check(status, project, "Projekt gefunden")
         check(*api.json("PATCH", f"/project/{project['id']}", {"description": summary, "body": body}), "Beschreibung aktualisiert")
+        check(*api.request("PATCH", f"/project/{project['id']}/icon", (MODRINTH / "icon.png").read_bytes(), "image/png", {"ext": "png"}),
+              "Icon aktualisiert")
     project_id = project["id"]
 
     status, project = api.request("GET", f"/project/{project_id}")
