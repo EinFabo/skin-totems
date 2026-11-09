@@ -2,7 +2,7 @@
 
 Fabric mod for Minecraft **26.2** (client-side only): every Totem of Undying shows the skin of the
 player holding it, either as a flat skin totem in the style of
-[Custom Totem Generator](https://github.com/EinFabo/Custom-Totem-Generator) (a 1:1, pixel-exact port of
+Custom Totem Generator (a 1:1, pixel-exact port of its
 `generate_totem_image`) or as a little 3D **plushie**. It works on any server, and other players
 don't need the mod.
 
